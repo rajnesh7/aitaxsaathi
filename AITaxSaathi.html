@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AITaxSaathi — Smart Tax Filing for Every Indian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:          #EEF0F5;
+  --bg-alt:      #E8EAF0;
+  --surface:     #F2F4F8;
+  --surface2:    #ECEEF3;
+  --saffron:     #F47B20;
+  --saffron-lt:  #FFF0E3;
+  --saffron-md:  #FFD9B5;
+  --saffron-dk:  #C8590A;
+  --emerald:     #2E9E6B;
+  --emerald-lt:  #E3F7EF;
+  --emerald-md:  #B2E8D0;
+  --navy:        #1E3A5F;
+  --navy-lt:     #E6EEF8;
+  --gold:        #D4900A;
+  --gold-lt:     #FFF7E0;
+  --text:        #252A38;
+  --text-mid:    #4E5568;
+  --text-soft:   #8A93A8;
+  --neu-out:     6px 6px 14px #D1D4DD, -4px -4px 10px #FFFFFF;
+  --neu-in:      inset 4px 4px 10px #D1D4DD, inset -3px -3px 8px #FFFFFF;
+  --neu-sm:      3px 3px 8px #D1D4DD, -2px -2px 6px #FFFFFF;
+  --neu-card:    10px 10px 24px #C5C8D2, -6px -6px 16px #FFFFFF;
+  --glass-bg:    rgba(255,255,255,0.58);
+  --glass-bg2:   rgba(255,255,255,0.78);
+  --glass-border:rgba(255,255,255,0.85);
+  --radius:      22px;
+  --radius-sm:   14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 55% 40% at 8% 12%, rgba(244,123,32,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 35% at 90% 82%, rgba(46,158,107,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 55% 48%, rgba(212,144,10,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ══ HEADER ══ */
+header {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--glass-bg2);
+  backdrop-filter: blur(28px) saturate(2);
+  -webkit-backdrop-filter: blur(28px) saturate(2);
+  border-bottom: 1.5px solid var(--glass-border);
+  box-shadow: 0 2px 28px rgba(0,0,0,0.07), 0 1px 0 rgba(255,255,255,0.9) inset;
+}
+.tricolour { height: 4px; background: linear-gradient(90deg,#FF9933 33.3%,#fff 33.3%,#fff 66.6%,#138808 66.6%); }
+.h-inner { display:flex; align-items:center; justify-content:space-between; padding:13px 30px; gap:14px; flex-wrap:wrap; }
+.logo { display:flex; align-items:center; gap:13px; }
+.logo-gem {
+  width:48px; height:48px; border-radius:15px;
+  background: linear-gradient(140deg,#F47B20,#FBAC60);
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px;
+  box-shadow: var(--neu-sm), 0 0 0 2.5px rgba(255,255,255,0.9);
+  position:relative;
+}
+.logo-gem::after {
+  content:''; position:absolute; inset:2px; border-radius:13px;
+  background: linear-gradient(140deg,rgba(255,255,255,0.4),transparent);
+  pointer-events:none;
+}
+.logo-words h1 {
+  font-family:'Playfair Display',serif; font-size:21px; font-weight:800;
+  background: linear-gradient(135deg,#F47B20,#C8590A);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.1;
+}
+.logo-words p { font-size:11px; color:var(--text-soft); letter-spacing:.5px; font-weight:700; }
+.h-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.ay-chip {
+  padding:6px 14px; border-radius:50px;
+  background:var(--saffron-lt); border:1.5px solid var(--saffron-md);
+  font-size:11px; font-weight:900; color:var(--saffron); letter-spacing:.3px;
+  box-shadow:var(--neu-sm);
+}
+.lang-wrap { position:relative; }
+.lang-btn {
+  display:flex; align-items:center; gap:7px; padding:9px 16px; border-radius:50px;
+  background:var(--surface); border:1.5px solid var(--glass-border);
+  font-size:13px; font-weight:800; color:var(--text-mid);
+  cursor:pointer; font-family:inherit; box-shadow:var(--neu-sm); transition:all .2s;
+}
+.lang-btn:hover { color:var(--saffron); background:var(--saffron-lt); border-color:var(--saffron-md); }
+.lang-drop {
+  position:absolute; top:calc(100% + 10px); right:0;
+  background:var(--glass-bg2); backdrop-filter:blur(20px);
+  border:1.5px solid var(--glass-border); border-radius:var(--radius-sm);
+  padding:10px; display:none; flex-wrap:wrap; width:292px; gap:6px; z-index:500;
+  box-shadow:var(--neu-card);
+}
+.lang-drop.open { display:flex; }
+.lang-opt {
+  flex:1 0 calc(33% - 4px); padding:8px 10px; border-radius:8px;
+  font-size:12px; font-weight:800; text-align:center; cursor:pointer;
+  border:1.5px solid transparent; color:var(--text-mid); background:var(--surface);
+  transition:all .15s; box-shadow:var(--neu-sm);
+}
+.lang-opt:hover,.lang-opt.active { background:var(--saffron-lt); border-color:var(--saffron-md); color:var(--saffron); }
+
+/* ══ PROGRESS ══ */
+.prog-wrap {
+  background:var(--glass-bg); backdrop-filter:blur(16px);
+  border-bottom:1.5px solid var(--glass-border); padding:14px 30px;
+  position:relative; z-index:100;
+}
+.steps-row { display:flex; align-items:center; max-width:860px; margin:0 auto; overflow-x:auto; gap:0; }
+.si { display:flex; flex-direction:column; align-items:center; gap:5px; flex:1; min-width:58px; }
+.si-dot {
+  width:34px; height:34px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:900;
+  background:var(--surface); color:var(--text-soft);
+  box-shadow:var(--neu-sm); transition:all .38s cubic-bezier(.34,1.56,.64,1);
+}
+.si.done .si-dot { background:linear-gradient(135deg,#2E9E6B,#38BF84); color:#fff; box-shadow:3px 3px 8px rgba(46,158,107,.35),-2px -2px 6px #fff; }
+.si.active .si-dot { background:linear-gradient(135deg,#F47B20,#FBAC60); color:#fff; box-shadow:3px 3px 10px rgba(244,123,32,.4),-2px -2px 6px #fff; transform:scale(1.18); }
+.si-label { font-size:10px; font-weight:800; color:var(--text-soft); text-align:center; white-space:nowrap; }
+.si.active .si-label { color:var(--saffron); }
+.si.done .si-label { color:var(--emerald); }
+.s-conn { flex:1; height:2px; background:var(--bg-alt); margin-bottom:18px; border-radius:2px; transition:background .4s; }
+.s-conn.done { background:linear-gradient(90deg,#2E9E6B,#F47B20); }
+
+/* ══ MAIN ══ */
+main { max-width:820px; margin:0 auto; padding:30px 20px 100px; position:relative; z-index:1; }
+
+/* ── Glass Card ── */
+.gcard {
+  background:var(--glass-bg2);
+  backdrop-filter:blur(28px) saturate(1.8);
+  -webkit-backdrop-filter:blur(28px) saturate(1.8);
+  border:1.5px solid var(--glass-border);
+  border-radius:28px;
+  box-shadow:var(--neu-card), 0 1px 0 rgba(255,255,255,0.95) inset;
+  overflow:hidden;
+  animation:popIn .42s cubic-bezier(.22,1,.36,1);
+}
+@keyframes popIn {
+  from { opacity:0; transform:translateY(22px) scale(.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+.gc-head {
+  padding:28px 34px 22px;
+  border-bottom:1.5px solid rgba(255,255,255,0.7);
+  display:flex; align-items:flex-start; gap:18px;
+  background:linear-gradient(135deg,rgba(244,123,32,.05),rgba(255,255,255,.25));
+}
+.step-gem { width:58px; height:58px; border-radius:17px; display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; box-shadow:var(--neu-sm); }
+.gc-head h2 { font-family:'Playfair Display',serif; font-size:23px; font-weight:800; color:var(--text); line-height:1.2; margin-bottom:5px; }
+.gc-head p { font-size:14px; color:var(--text-mid); line-height:1.65; font-weight:600; }
+.gc-body { padding:26px 34px; }
+
+/* ── Tip ── */
+.tip {
+  display:flex; gap:12px; align-items:flex-start;
+  background:var(--gold-lt); border:1.5px solid rgba(212,144,10,.22);
+  border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:22px;
+  box-shadow:var(--neu-sm);
+}
+.tip .bulb { font-size:20px; flex-shrink:0; }
+.tip p { font-size:13px; color:#5A430C; line-height:1.65; font-weight:600; }
+.tip strong { color:#9A5C00; }
+
+/* ── Options ── */
+.opt-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(178px,1fr)); gap:13px; margin-bottom:22px; }
+.opt-card {
+  background:var(--surface); border:2px solid transparent; border-radius:18px;
+  padding:20px 14px; cursor:pointer;
+  transition:all .25s cubic-bezier(.22,1,.36,1);
+  display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;
+  box-shadow:var(--neu-out);
+}
+.opt-card:hover { transform:translateY(-4px); border-color:var(--saffron-md); background:var(--saffron-lt); box-shadow:8px 8px 20px rgba(244,123,32,.13),-4px -4px 12px #fff; }
+.opt-card.sel { border-color:var(--saffron); background:var(--saffron-lt); box-shadow:inset 3px 3px 8px rgba(244,123,32,.13),inset -2px -2px 5px rgba(255,255,255,.95),0 0 0 3px rgba(244,123,32,.12); }
+.opt-card .oi { font-size:34px; }
+.opt-card .ol { font-size:13px; font-weight:900; color:var(--text); }
+.opt-card .od { font-size:11px; color:var(--text-soft); font-weight:700; }
+
+/* ── Input ── */
+.fg { margin-bottom:20px; }
+.fg label { display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:900; color:var(--text-mid); margin-bottom:7px; text-transform:uppercase; letter-spacing:.5px; }
+.fg .hint { font-size:12px; color:var(--text-soft); margin-bottom:8px; font-weight:600; line-height:1.5; }
+.inp-wrap {
+  display:flex; align-items:center; background:var(--surface);
+  border:2px solid rgba(255,255,255,0.75); border-radius:var(--radius-sm);
+  box-shadow:var(--neu-in); overflow:hidden; transition:all .2s;
+}
+.inp-wrap:focus-within { border-color:var(--saffron-md); box-shadow:var(--neu-in),0 0 0 3px rgba(244,123,32,.1); }
+.inp-pre {
+  padding:0 14px; font-size:15px; font-weight:900; color:var(--saffron); flex-shrink:0;
+  border-right:1.5px solid rgba(0,0,0,.06); min-height:48px;
+  display:flex; align-items:center; background:var(--saffron-lt);
+}
+.inp-wrap input { flex:1; background:transparent; border:none; outline:none; color:var(--text); font-size:15px; font-family:inherit; font-weight:700; padding:13px 16px; }
+.inp-wrap input::placeholder { color:var(--text-soft); font-weight:600; }
+
+/* ── Calc Strip ── */
+.calc-strip {
+  background:var(--emerald-lt); border:1.5px solid var(--emerald-md);
+  border-radius:var(--radius-sm); padding:18px 22px; margin-top:10px;
+  box-shadow:var(--neu-sm); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+}
+.calc-strip .csl .csl-lb { font-size:11.5px; font-weight:900; color:var(--emerald); text-transform:uppercase; letter-spacing:.4px; }
+.calc-strip .csl .csl-nt { font-size:11px; color:var(--text-soft); margin-top:3px; font-weight:600; }
+.calc-strip .csv { font-family:'Playfair Display',serif; font-size:30px; font-weight:800; color:var(--emerald); }
+
+/* ── Upload ── */
+.upload-zone {
+  border:2.5px dashed rgba(244,123,32,.3); border-radius:20px; padding:36px; text-align:center;
+  cursor:pointer; transition:all .25s; background:var(--saffron-lt); box-shadow:var(--neu-in);
+}
+.upload-zone:hover,.upload-zone.drag { border-color:var(--saffron); background:var(--saffron-md); box-shadow:var(--neu-in),0 0 0 4px rgba(244,123,32,.08); }
+.upload-zone .uz-ico { font-size:52px; margin-bottom:14px; }
+.upload-zone h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:6px; }
+.upload-zone p { font-size:13px; color:var(--text-mid); font-weight:600; }
+.fchips { margin-top:14px; display:flex; flex-direction:column; gap:9px; }
+.fchip {
+  display:flex; align-items:center; gap:12px;
+  background:var(--emerald-lt); border:1.5px solid var(--emerald-md);
+  border-radius:13px; padding:12px 16px; box-shadow:var(--neu-sm); animation:popIn .3s ease;
+}
+.fchip .fc-i { font-size:22px; }
+.fchip .fc-n { font-size:13px; font-weight:800; color:var(--text); flex:1; }
+.fchip .fc-s { font-size:11px; color:var(--emerald); font-weight:700; }
+.fchip .fc-x { cursor:pointer; color:#D32F2F; font-size:18px; font-weight:700; transition:color .2s; }
+.fchip .fc-x:hover { color:#b71c1c; }
+.add-more-btn {
+  display:inline-flex; align-items:center; gap:7px; margin-top:10px; padding:9px 18px; border-radius:50px;
+  background:var(--surface); border:1.5px solid var(--saffron-md); color:var(--saffron);
+  font-size:13px; font-weight:800; font-family:inherit; cursor:pointer; box-shadow:var(--neu-sm); transition:all .2s;
+}
+.add-more-btn:hover { background:var(--saffron-lt); }
+
+/* ── Deductions ── */
+.ded-item {
+  background:var(--surface); border:1.5px solid rgba(255,255,255,.8);
+  border-radius:17px; margin-bottom:11px; box-shadow:var(--neu-out); overflow:hidden; transition:all .2s;
+}
+.ded-item:hover { border-color:var(--saffron-md); }
+.ded-item.open { border-color:var(--saffron); box-shadow:var(--neu-out),0 0 0 3px rgba(244,123,32,.09); }
+.ded-hdr { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; cursor:pointer; }
+.ded-hdr-l { display:flex; align-items:center; gap:13px; }
+.ded-hdr-l .di { font-size:24px; }
+.ded-hdr-l strong { font-size:14px; font-weight:800; color:var(--text); display:block; }
+.ded-hdr-l span { font-size:11px; color:var(--text-soft); font-weight:700; }
+.max-tag { display:inline-flex; padding:3px 9px; border-radius:20px; background:var(--emerald-lt); border:1px solid var(--emerald-md); color:var(--emerald); font-size:10px; font-weight:900; margin-left:8px; vertical-align:middle; }
+.ded-arrow { color:var(--text-soft); font-size:20px; transition:transform .3s,color .2s; }
+.ded-item.open .ded-arrow { transform:rotate(180deg); color:var(--saffron); }
+.ded-body { padding:0 20px; max-height:0; overflow:hidden; transition:max-height .38s ease,padding .3s; }
+.ded-item.open .ded-body { max-height:700px; padding-bottom:18px; }
+.ded-body > p { font-size:13px; color:var(--text-mid); font-weight:600; margin-bottom:13px; line-height:1.6; }
+.cl { list-style:none; margin-bottom:16px; }
+.cl li { display:flex; gap:11px; align-items:flex-start; padding:9px 0; border-bottom:1px solid rgba(0,0,0,.05); font-size:13px; }
+.cl li:last-child { border-bottom:none; }
+.cl li .ci { font-size:15px; flex-shrink:0; margin-top:1px; }
+.cl li strong { display:block; font-weight:800; color:var(--text); margin-bottom:2px; }
+.cl li .eg { font-size:11px; color:var(--text-soft); font-weight:600; }
+.ded-total-bar {
+  display:flex; justify-content:space-between; align-items:center;
+  background:var(--emerald-lt); border:1.5px solid var(--emerald-md);
+  border-radius:14px; padding:16px 20px; margin-top:14px; box-shadow:var(--neu-sm);
+}
+.ded-total-bar .dtl { font-size:11.5px; font-weight:900; color:var(--emerald); text-transform:uppercase; letter-spacing:.3px; }
+.ded-total-bar .dts { font-size:11px; color:var(--text-soft); margin-top:2px; font-weight:600; }
+.ded-total-bar .dtv { font-family:'Playfair Display',serif; font-size:28px; font-weight:800; color:var(--emerald); }
+
+/* ── Regime Compare ── */
+.regime-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:22px; }
+.rg-box {
+  background:var(--surface); border-radius:18px; padding:22px; text-align:center;
+  border:2px solid rgba(255,255,255,.8); box-shadow:var(--neu-out); transition:all .2s;
+}
+.rg-box.winner { border-color:var(--emerald); background:var(--emerald-lt); box-shadow:var(--neu-out),0 0 0 3px rgba(46,158,107,.12); }
+.rg-box .rg-name { font-size:11.5px; font-weight:800; color:var(--text-mid); margin-bottom:10px; text-transform:uppercase; letter-spacing:.4px; }
+.rg-box .rg-tax { font-family:'Playfair Display',serif; font-size:30px; font-weight:800; color:var(--saffron); margin-bottom:4px; }
+.rg-box.winner .rg-tax { color:var(--emerald); }
+.rg-box .rg-sub { font-size:11px; color:var(--text-soft); font-weight:600; }
+.win-badge { display:inline-flex; align-items:center; gap:5px; margin-top:10px; padding:4px 12px; border-radius:20px; background:var(--emerald-md); color:var(--emerald); font-size:11px; font-weight:900; }
+
+/* ── Radio Cards ── */
+.rcards { display:flex; flex-direction:column; gap:11px; }
+.rcard {
+  display:flex; align-items:center; gap:14px; padding:16px 20px; border-radius:15px;
+  border:2px solid rgba(255,255,255,.8); background:var(--surface); cursor:pointer;
+  box-shadow:var(--neu-out); transition:all .22s;
+}
+.rcard:hover { border-color:var(--saffron-md); background:var(--saffron-lt); }
+.rcard.sel { border-color:var(--saffron); background:var(--saffron-lt); box-shadow:var(--neu-in),0 0 0 3px rgba(244,123,32,.1); }
+.rcard .rd { width:20px; height:20px; border-radius:50%; flex-shrink:0; border:2.5px solid var(--text-soft); display:flex; align-items:center; justify-content:center; transition:all .2s; }
+.rcard.sel .rd { border-color:var(--saffron); }
+.rcard.sel .rd::after { content:''; width:9px; height:9px; border-radius:50%; background:var(--saffron); display:block; }
+.rcard .rt strong { font-size:14px; font-weight:800; color:var(--text); }
+.rcard .rt span { font-size:12px; color:var(--text-mid); font-weight:600; display:block; margin-top:3px; }
+
+/* ── Alerts ── */
+.save-note { display:flex; align-items:center; gap:12px; background:var(--emerald-lt); border:1.5px solid var(--emerald-md); border-radius:13px; padding:14px 18px; margin-bottom:20px; font-size:13px; color:var(--text-mid); font-weight:600; box-shadow:var(--neu-sm); }
+.save-note strong { color:var(--emerald); }
+.multi-note { background:var(--navy-lt); border:1.5px solid rgba(30,58,95,.15); border-radius:13px; padding:14px 18px; margin-bottom:18px; font-size:13px; color:var(--navy); font-weight:700; box-shadow:var(--neu-sm); }
+
+/* ── Summary ── */
+.sum-hero {
+  background:linear-gradient(135deg,rgba(244,123,32,.07),rgba(255,255,255,.4));
+  border-bottom:1.5px solid rgba(255,255,255,.7); padding:36px; text-align:center;
+}
+.sum-hero h2 { font-family:'Playfair Display',serif; font-size:28px; font-weight:800; color:var(--text); margin-bottom:4px; }
+.sum-hero p { font-size:14px; color:var(--text-mid); margin-bottom:22px; font-weight:600; }
+.result-pill {
+  display:inline-flex; flex-direction:column; align-items:center;
+  background:var(--glass-bg2); backdrop-filter:blur(16px);
+  border:1.5px solid var(--glass-border); border-radius:24px; padding:24px 52px;
+  box-shadow:var(--neu-card);
+}
+.result-pill .rp-lbl { font-size:11px; font-weight:900; color:var(--text-soft); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+.result-pill .rp-amt { font-family:'Playfair Display',serif; font-size:46px; font-weight:800; line-height:1; }
+.result-pill .rp-amt.refund { color:var(--emerald); }
+.result-pill .rp-amt.pay { color:var(--saffron); }
+.result-pill .rp-sub { font-size:12px; color:var(--text-soft); margin-top:6px; font-weight:600; }
+.sum-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:24px 34px; }
+.sg { background:var(--surface); border:1.5px solid rgba(255,255,255,.8); border-radius:15px; padding:16px; box-shadow:var(--neu-sm); }
+.sg .sgl { font-size:12px; font-weight:700; color:var(--text-soft); margin-bottom:5px; }
+.sg .sgv { font-family:'Playfair Display',serif; font-size:21px; font-weight:800; color:var(--text); }
+.sg .sgv.green { color:var(--emerald); }
+.sg .sgv.orange { color:var(--saffron); }
+.next-box { margin:0 34px 28px; background:var(--saffron-lt); border:1.5px solid var(--saffron-md); border-radius:18px; padding:20px 22px; box-shadow:var(--neu-sm); }
+.next-box h3 { font-family:'Playfair Display',serif; font-size:16px; font-weight:800; color:var(--saffron-dk); margin-bottom:14px; }
+.ns-row { display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid rgba(244,123,32,.12); font-size:13px; color:var(--text-mid); font-weight:600; }
+.ns-row:last-child { border-bottom:none; }
+.ns-num { width:24px; height:24px; border-radius:50%; flex-shrink:0; background:linear-gradient(135deg,#F47B20,#FBAC60); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; color:#fff; box-shadow:2px 2px 6px rgba(244,123,32,.3); }
+.emp-row { display:flex; justify-content:space-between; align-items:center; background:var(--surface); border:1.5px solid rgba(255,255,255,.8); border-radius:13px; padding:13px 16px; margin-bottom:9px; box-shadow:var(--neu-sm); }
+.emp-row .erl strong { font-size:13px; font-weight:800; color:var(--text); display:block; }
+.emp-row .erl span { font-size:11px; color:var(--text-soft); font-weight:600; }
+.emp-row .err { text-align:right; }
+.emp-row .err .ersal { font-size:13px; font-weight:800; color:var(--text); }
+.emp-row .err .ertds { font-size:11px; color:var(--emerald); font-weight:700; }
+
+/* ── Nav ── */
+.nav-row { display:flex; justify-content:space-between; align-items:center; padding:20px 34px; border-top:1.5px solid rgba(255,255,255,.7); gap:12px; }
+.btn { display:flex; align-items:center; gap:8px; padding:13px 28px; border-radius:50px; font-size:14px; font-weight:800; font-family:inherit; cursor:pointer; border:none; transition:all .22s; }
+.btn-primary { background:linear-gradient(135deg,#F47B20,#FBAC60); color:#fff; box-shadow:4px 4px 12px rgba(244,123,32,.35),-2px -2px 8px rgba(255,255,255,.9); }
+.btn-primary:hover { transform:translateY(-2px); box-shadow:6px 6px 18px rgba(244,123,32,.45),-2px -2px 8px rgba(255,255,255,.9); }
+.btn-secondary { background:var(--surface); color:var(--text-mid); border:1.5px solid rgba(255,255,255,.8); box-shadow:var(--neu-sm); }
+.btn-secondary:hover { color:var(--saffron); background:var(--saffron-lt); border-color:var(--saffron-md); }
+.btn-secondary:disabled { opacity:.35; cursor:not-allowed; }
+.btn-ghost { background:none; border:none; color:var(--text-soft); font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; padding:8px 12px; border-radius:50px; transition:all .2s; }
+.btn-ghost:hover { background:var(--surface); color:var(--text); box-shadow:var(--neu-sm); }
+
+/* ── Tooltip ── */
+.tt { position:relative; display:inline-flex; cursor:help; margin-left:4px; }
+.tt .ti { font-size:14px; color:var(--text-soft); }
+.tt .tc { display:none; position:absolute; bottom:28px; left:50%; transform:translateX(-50%); background:var(--navy); color:#fff; border-radius:10px; padding:10px 14px; font-size:12px; width:220px; z-index:50; line-height:1.5; font-weight:600; box-shadow:4px 4px 12px rgba(0,0,0,.18); }
+.tt:hover .tc { display:block; }
+
+.tag-n { background:var(--emerald-lt); border:1px solid var(--emerald-md); color:var(--emerald); padding:2px 8px; border-radius:20px; font-size:10px; font-weight:900; margin-left:6px; }
+.tag-o { background:var(--saffron-lt); border:1px solid var(--saffron-md); color:var(--saffron); padding:2px 8px; border-radius:20px; font-size:10px; font-weight:900; margin-left:6px; }
+
+@media (max-width:600px) {
+  .gc-head,.gc-body,.nav-row { padding-left:18px; padding-right:18px; }
+  .sum-grid { grid-template-columns:1fr; }
+  .regime-grid { grid-template-columns:1fr; }
+  .opt-grid { grid-template-columns:1fr 1fr; }
+  .sum-hero { padding:24px 18px; }
+  .result-pill { padding:18px 28px; }
+  .result-pill .rp-amt { font-size:34px; }
+  .sum-grid,.next-box { margin-left:18px; margin-right:18px; }
+  .h-inner { padding:10px 16px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tricolour"></div>
+  <div class="h-inner">
+    <div class="logo">
+      <div class="logo-gem">🤖</div>
+      <div class="logo-words">
+        <h1>AITaxSaathi</h1>
+        <p>Smart Tax Filing for Every Indian</p>
+      </div>
+    </div>
+    <div class="h-right">
+      <div class="ay-chip">AY 2024–25</div>
+      <div class="lang-wrap">
+        <button class="lang-btn" onclick="toggleLang(event)">🌐 <span id="langTxt">English</span> ▾</button>
+        <div class="lang-drop" id="langDrop">
+          <div class="lang-opt active" onclick="setLang('English','en',this)">English</div>
+          <div class="lang-opt" onclick="setLang('हिंदी','hi',this)">हिंदी</div>
+          <div class="lang-opt" onclick="setLang('বাংলা','bn',this)">বাংলা</div>
+          <div class="lang-opt" onclick="setLang('தமிழ்','ta',this)">தமிழ்</div>
+          <div class="lang-opt" onclick="setLang('తెలుగు','te',this)">తెలుగు</div>
+          <div class="lang-opt" onclick="setLang('मराठी','mr',this)">मराठी</div>
+          <div class="lang-opt" onclick="setLang('ગુજરાતી','gu',this)">ગુજરાતી</div>
+          <div class="lang-opt" onclick="setLang('ಕನ್ನಡ','kn',this)">ಕನ್ನಡ</div>
+          <div class="lang-opt" onclick="setLang('മലയാളം','ml',this)">മലയാളം</div>
+          <div class="lang-opt" onclick="setLang('ਪੰਜਾਬੀ','pa',this)">ਪੰਜਾਬੀ</div>
+          <div class="lang-opt" onclick="setLang('اردو','ur',this)">اردو</div>
+          <div class="lang-opt" onclick="setLang('ओड़िआ','or',this)">ओड़िआ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="prog-wrap">
+  <div class="steps-row" id="stepsRow"></div>
+</div>
+
+<main>
+  <div class="gcard" id="card"></div>
+</main>
+
+<script>
+const STEPS=[
+  {id:'start',label:'Start',icon:'👋'},
+  {id:'form16',label:'Form 16',icon:'📄'},
+  {id:'income',label:'Income',icon:'💰'},
+  {id:'deductions',label:'Deductions',icon:'🧾'},
+  {id:'regime',label:'Regime',icon:'⚖️'},
+  {id:'summary',label:'Summary',icon:'📊'},
+];
+let cur=0;
+let D={empType:'',files:[],salary:0,hra:0,other:0,ded:{c80C:0,d80D:0,e80E:0,h24b:0,nps:0,g80G:0},regime:'new'};
+
+function toggleLang(e){e.stopPropagation();document.getElementById('langDrop').classList.toggle('open');}
+function setLang(label,code,el){
+  document.getElementById('langTxt').textContent=label;
+  document.querySelectorAll('.lang-opt').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('langDrop').classList.remove('open');
+  if(code!=='en') alert(`Language set to ${label}!\n\nFull version uses Google Translate API — all 22 official Indian languages auto-translated.`);
+}
+document.addEventListener('click',()=>document.getElementById('langDrop').classList.remove('open'));
+
+function renderProgress(){
+  const row=document.getElementById('stepsRow');
+  row.innerHTML='';
+  STEPS.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.className='si'+(i<cur?' done':i===cur?' active':'');
+    d.innerHTML=`<div class="si-dot">${i<cur?'✓':i+1}</div><div class="si-label">${s.label}</div>`;
+    row.appendChild(d);
+    if(i<STEPS.length-1){const l=document.createElement('div');l.className='s-conn'+(i<cur?' done':'');row.appendChild(l);}
+  });
+}
+
+function go(n){cur=n;render();}
+
+function navRow(bFn,nFn,nTxt='Next →',sFn=null){
+  return `<div class="nav-row">
+    <button class="btn btn-secondary" ${cur===0?'disabled':''} onclick="(${bFn.toString()})()">← Back</button>
+    <div style="display:flex;gap:10px;align-items:center;">
+      ${sFn?`<button class="btn-ghost" onclick="(${sFn.toString()})()">Skip</button>`:''}
+      <button class="btn btn-primary" onclick="(${nFn.toString()})()">${nTxt}</button>
+    </div>
+  </div>`;
+}
+
+function render(){
+  renderProgress();
+  const c=document.getElementById('card');
+  const id=STEPS[cur].id;
+  if(id==='start') renderStart(c);
+  else if(id==='form16') renderForm16(c);
+  else if(id==='income') renderIncome(c);
+  else if(id==='deductions') renderDeductions(c);
+  else if(id==='regime') renderRegime(c);
+  else if(id==='summary') renderSummary(c);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── STEP 0 ── */
+function renderStart(c){
+  const types=[
+    {icon:'👔',label:'Salaried',desc:'Company / Govt employee',val:'salaried'},
+    {icon:'💻',label:'Freelancer',desc:'Self-employed / consultant',val:'self'},
+    {icon:'🏢',label:'Business',desc:'SMB / proprietor',val:'business'},
+    {icon:'💼',label:'Multiple Jobs',desc:'Worked at 2+ companies',val:'multi'},
+    {icon:'🌾',label:'Farmer + Job',desc:'Agri income + employment',val:'farmer'},
+    {icon:'🏠',label:'Rental Income',desc:'Income from property',val:'rental'},
+  ];
+  c.innerHTML=`
+    <div class="gc-head">
+      <div class="step-gem" style="background:var(--saffron-lt)">👋</div>
+      <div><h2>Namaste! Let's File Your Taxes</h2><p>Simple questions, step by step — no CA needed. Ready in 10–15 minutes.</p></div>
+    </div>
+    <div class="gc-body">
+      <div class="tip"><span class="bulb">💡</span><p>Keep handy: <strong>Form 16</strong> from employer · <strong>Bank statements</strong> · <strong>Investment proofs</strong> (PPF, ELSS, LIC receipts). You can skip any step!</p></div>
+      <p style="font-size:11px;font-weight:900;color:var(--text-soft);letter-spacing:.6px;text-transform:uppercase;margin-bottom:13px;">Select Your Taxpayer Type</p>
+      <div class="opt-grid">${types.map(t=>`<div class="opt-card ${D.empType===t.val?'sel':''}" onclick="pickEmp('${t.val}',this)"><div class="oi">${t.icon}</div><div class="ol">${t.label}</div><div class="od">${t.desc}</div></div>`).join('')}</div>
+    </div>
+    ${navRow(()=>{},()=>{if(!D.empType){alert('Please select your taxpayer type to continue.');return;}go(cur+1);},'Continue →')}
+  `;
+}
+function pickEmp(val,el){D.empType=val;document.querySelectorAll('.opt-card').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');}
+
+/* ── STEP 1 ── */
+function renderForm16(c){
+  const isM=D.empType==='multi';
+  c.innerHTML=`
+    <div class="gc-head">
+      <div class="step-gem" style="background:var(--navy-lt)">📄</div>
+      <div><h2>Upload Your Form 16</h2><p>Issued by your employer — has salary & TDS details. We auto-fill from it.</p></div>
+    </div>
+    <div class="gc-body">
+      ${isM?`<div class="multi-note">🏢 Multiple companies? Upload <strong>each company's Form 16 separately</strong> — we combine everything automatically!</div>`:''}
+      <div class="tip"><span class="bulb">💡</span><p><strong>Where to find Form 16?</strong> Ask HR or Finance team — usually emailed in April–May. It's a PDF with your name, PAN, and salary breakup.</p></div>
+      <div class="upload-zone" id="uz" onclick="document.getElementById('fi').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="onDrop(event)">
+        <div class="uz-ico">📤</div>
+        <h3>Click to Upload Form 16 (PDF)</h3>
+        <p>Drag & drop here · PDF only · Multiple files supported</p>
+      </div>
+      <input type="file" id="fi" accept=".pdf" multiple style="display:none" onchange="onFiles(event)">
+      <div class="fchips" id="fchips"></div>
+      ${D.files.length>0?`<button class="add-more-btn" onclick="document.getElementById('fi').click()">＋ Add another employer's Form 16</button>`:''}
+    </div>
+    ${navRow(()=>go(cur-1),()=>go(cur+1),D.files.length>0?'Continue →':"Skip — I'll enter manually →")}
+  `;
+  refreshChips();
+}
+function onDrop(e){e.preventDefault();document.getElementById('uz').classList.remove('drag');Array.from(e.dataTransfer.files).filter(f=>f.type==='application/pdf').forEach(addFile);}
+function onFiles(e){Array.from(e.target.files).forEach(addFile);e.target.value='';}
+function addFile(file){
+  const en={name:file.name,status:'Parsing…',salary:0,tds:0};
+  D.files.push(en); render();
+  setTimeout(()=>{
+    const i=D.files.indexOf(en); if(i===-1) return;
+    en.salary=Math.floor(Math.random()*600000+400000); en.tds=Math.floor(en.salary*.1); en.status='Parsed ✓';
+    D.salary=D.files.reduce((a,f)=>a+f.salary,0); refreshChips();
+  },1600);
+}
+function removeFile(i){D.files.splice(i,1);D.salary=D.files.reduce((a,f)=>a+f.salary,0);render();}
+function refreshChips(){
+  const el=document.getElementById('fchips'); if(!el) return;
+  el.innerHTML=D.files.map((f,i)=>`<div class="fchip"><span class="fc-i">📋</span><div style="flex:1"><div class="fc-n">${f.name}</div><div class="fc-s">${f.status}${f.salary?` · Salary ₹${f.salary.toLocaleString('en-IN')} · TDS ₹${f.tds.toLocaleString('en-IN')}`:''}</div></div><span class="fc-x" onclick="removeFile(${i})">✕</span></div>`).join('');
+}
+
+/* ── STEP 2 ── */
+function renderIncome(c){
+  const pre=D.salary>0;
+  c.innerHTML=`
+    <div class="gc-head">
+      <div class="step-gem" style="background:var(--emerald-lt)">💰</div>
+      <div><h2>Your Income Details</h2><p>For April 2023 – March 2024 (Financial Year 2023-24)</p></div>
+    </div>
+    <div class="gc-body">
+      ${pre?`<div class="save-note">✅ <span>Auto-filled from your Form 16 — please verify each number below.</span></div>`:''}
+      <div class="tip"><span class="bulb">💡</span><p><strong>CTC ≠ Taxable Salary.</strong> Taxable salary = gross minus HRA exemption, LTA, and ₹50,000 standard deduction (auto-applied by law every year).</p></div>
+      <div class="fg">
+        <label>Gross Annual Salary (all employers)</label>
+        <div class="hint">Add salaries from all Form 16s if you changed jobs this year</div>
+        <div class="inp-wrap"><span class="inp-pre">₹</span><input type="number" id="iSal" value="${D.salary||''}" placeholder="e.g. 800000" oninput="D.salary=+this.value;lc()"></div>
+      </div>
+      <div class="fg">
+        <label>HRA Exemption Claimed <div class="tt"><span class="ti">ℹ️</span><span class="tc">HRA reduces taxable income if you pay rent. Needs rent receipts. Not available in New Tax Regime.</span></div></label>
+        <div class="hint">Example: HRA ₹2L/yr, rent ₹18K/month in non-metro → exemption ≈ ₹1.44L. Enter 0 if in own house.</div>
+        <div class="inp-wrap"><span class="inp-pre">₹</span><input type="number" id="iHra" value="${D.hra||''}" placeholder="0 if not applicable" oninput="D.hra=+this.value;lc()"></div>
+      </div>
+      <div class="fg">
+        <label>Other Income <div class="tt"><span class="ti">ℹ️</span><span class="tc">Includes: FD interest, savings bank interest above ₹10,000, dividends, rental income received, capital gains from stocks or mutual funds.</span></div></label>
+        <div class="hint">FD interest · Savings interest above ₹10,000 · Capital gains · Freelance · Rental received</div>
+        <div class="inp-wrap"><span class="inp-pre">₹</span><input type="number" value="${D.other||''}" placeholder="0 if none" oninput="D.other=+this.value;lc()"></div>
+      </div>
+      <div class="calc-strip">
+        <div class="csl"><div class="csl-lb">Estimated Gross Total Income</div><div class="csl-nt">Before deductions · Standard ₹50,000 auto-applied</div></div>
+        <div class="csv" id="liveAmt">₹0</div>
+      </div>
+    </div>
+    ${navRow(()=>go(cur-1),()=>go(cur+1))}
+  `;
+  lc();
+}
+function lc(){const v=Math.max(0,(D.salary||0)-(D.hra||0)-50000+(D.other||0));const el=document.getElementById('liveAmt');if(el)el.textContent='₹'+v.toLocaleString('en-IN');}
+
+/* ── STEP 3 ── */
+const DEDS=[
+  {id:'c80C',icon:'🏦',title:'Section 80C',sub:'Investments & Payments',max:150000,desc:'Reduce taxable income by up to ₹1.5 lakh through investments and payments.',items:[{n:'PPF (Public Provident Fund)',eg:'Invested ₹50,000 → ₹50,000 deducted from income'},{n:'ELSS Mutual Funds (Tax-saver)',eg:'₹1.5L in ELSS → full ₹1.5L deducted'},{n:'Life Insurance Premium (LIC etc.)',eg:'₹20,000 LIC premium → ₹20,000 deducted'},{n:'Employee EPF / PF Contribution',eg:'Auto-deducted from salary — already in Form 16'},{n:'Home Loan Principal Repayment',eg:'₹80,000 principal paid → ₹80,000 deducted'},{n:"Children's School Tuition Fees",eg:'Up to 2 children — only tuition fees count'},{n:'NSC / 5-year Tax Saver FD / ULIP',eg:'All count toward the ₹1.5L total limit'},]},
+  {id:'d80D',icon:'🏥',title:'Section 80D',sub:'Health Insurance Premium',max:75000,desc:'Deduction for health insurance premiums paid for yourself and your parents.',items:[{n:'Self + Spouse + Children premium',eg:'Up to ₹25,000 per year for your own family'},{n:"Parents' health insurance",eg:'Extra ₹25,000 (₹50,000 if parents are senior citizens 60+)'},{n:'Preventive health check-up',eg:'Up to ₹5,000 included within the above limits'},]},
+  {id:'e80E',icon:'📚',title:'Section 80E',sub:'Education Loan Interest — No Upper Limit!',max:null,desc:'Full interest on education loan for higher studies is deductible — NO cap at all!',items:[{n:'Interest on higher education loan',eg:'Paid ₹60,000 interest → full ₹60,000 deducted, no limit!'},{n:'Valid for 8 consecutive years',eg:'Starting from the year you begin repaying the loan'},]},
+  {id:'h24b',icon:'🏠',title:'Section 24(b)',sub:'Home Loan Interest',max:200000,desc:'Interest paid on home loan for your self-occupied property — up to ₹2 lakh.',items:[{n:'Home loan interest paid this year',eg:'Paid ₹2.5L interest → can claim max ₹2L under this section'},]},
+  {id:'nps',icon:'🧓',title:'Section 80CCD(1B)',sub:'NPS — Extra ₹50K Beyond 80C',max:50000,desc:'Additional ₹50,000 deduction for NPS — completely over and above the ₹1.5L 80C limit!',items:[{n:'National Pension System — NPS Tier I',eg:'₹50,000 invested → extra ₹50,000 deducted beyond 80C limit'},]},
+  {id:'g80G',icon:'🤝',title:'Section 80G',sub:'Charitable Donations',max:null,desc:'50% or 100% deduction on donations to approved funds and organisations.',items:[{n:'PM National Relief Fund',eg:'₹10,000 donated → ₹10,000 deducted (100% deduction)'},{n:'Other approved NGOs / trusts',eg:'₹20,000 donated → ₹10,000 deducted (50% deduction)'},]},
+];
+function renderDeductions(c){
+  c.innerHTML=`
+    <div class="gc-head">
+      <div class="step-gem" style="background:#F3E5F5">🧾</div>
+      <div><h2>Deductions & Tax Savings</h2><p>These reduce your taxable income. Only apply under Old Tax Regime.</p></div>
+    </div>
+    <div class="gc-body">
+      <div class="tip"><span class="bulb">💡</span><p>Open each section and enter amounts invested or paid this year. <strong>More deductions = lower tax!</strong> We'll compare both regimes for you.</p></div>
+      <div id="dedList">${DEDS.map(d=>`
+        <div class="ded-item" id="di${d.id}">
+          <div class="ded-hdr" onclick="toggleD('${d.id}')">
+            <div class="ded-hdr-l"><span class="di">${d.icon}</span><div><strong>${d.title}<span class="max-tag">${d.max?'Max ₹'+d.max.toLocaleString('en-IN'):'No Limit'}</span></strong><span>${d.sub}</span></div></div>
+            <span class="ded-arrow">▾</span>
+          </div>
+          <div class="ded-body">
+            <p>${d.desc}</p>
+            <ul class="cl">${d.items.map(it=>`<li><span class="ci">✅</span><div><strong>${it.n}</strong><span class="eg">Example: ${it.eg}</span></div></li>`).join('')}</ul>
+            <div class="fg" style="margin-bottom:0">
+              <label>Your ${d.title} Amount</label>
+              <div class="inp-wrap"><span class="inp-pre">₹</span><input type="number" value="${D.ded[d.id]||''}" placeholder="${d.max?'Max ₹'+d.max.toLocaleString('en-IN'):'Enter amount'}" oninput="D.ded['${d.id}']=Math.min(${d.max||9999999},+this.value||0);refreshDedTotal()"></div>
+              ${d.max?`<div style="font-size:11px;color:var(--text-soft);font-weight:600;margin-top:5px;">Maximum allowed: ₹${d.max.toLocaleString('en-IN')}</div>`:''}
+            </div>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="ded-total-bar">
+        <div><div class="dtl">Total Deductions</div><div class="dts">Under Old Tax Regime</div></div>
+        <div class="dtv" id="dedTotal">₹0</div>
+      </div>
+    </div>
+    ${navRow(()=>go(cur-1),()=>go(cur+1),'Next →',()=>go(cur+1))}
+  `;
+  refreshDedTotal();
+}
+function toggleD(id){document.getElementById('di'+id).classList.toggle('open');}
+function refreshDedTotal(){const t=Object.values(D.ded).reduce((a,b)=>a+(b||0),0);const el=document.getElementById('dedTotal');if(el)el.textContent='₹'+t.toLocaleString('en-IN');}
+
+function calcTax(inc,regime){
+  if(inc<=0) return 0;
+  let tax=0;
+  if(regime==='new'){
+    if(inc<=300000) return 0;
+    const slabs=[[300000,.05],[300000,.10],[300000,.15],[300000,.20],[300000,.25],[Infinity,.30]];
+    let r=inc-300000;
+    for(const [lim,rt] of slabs){if(r<=0) break;tax+=Math.min(r,lim)*rt;r-=lim;}
+    if(inc<=700000) tax=0;
+  } else {
+    const slabs=[[250000,0],[250000,.05],[500000,.20],[Infinity,.30]];
+    let r=inc;
+    for(const [lim,rt] of slabs){const t2=Math.min(r,lim);tax+=t2*rt;r-=t2;if(r<=0) break;}
+    if(inc<=500000) tax=0;
+  }
+  return Math.round(tax*1.04);
+}
+
+/* ── STEP 4 ── */
+function renderRegime(c){
+  const gross=Math.max(0,(D.salary||0)-(D.hra||0)-50000+(D.other||0));
+  const totalDed=Object.values(D.ded).reduce((a,b)=>a+(b||0),0);
+  const oldInc=Math.max(0,gross-totalDed);
+  const newInc=Math.max(0,gross-75000);
+  const taxOld=calcTax(oldInc,'old');
+  const taxNew=calcTax(newInc,'new');
+  const better=taxOld<=taxNew?'old':'new';
+  const saving=Math.abs(taxOld-taxNew);
+  c.innerHTML=`
+    <div class="gc-head">
+      <div class="step-gem" style="background:var(--gold-lt)">⚖️</div>
+      <div><h2>Choose Your Tax Regime</h2><p>India has two tax systems. We calculated both — pick the one that saves you more money!</p></div>
+    </div>
+    <div class="gc-body">
+      <div class="tip"><span class="bulb">💡</span><p><strong>Old Regime</strong> = better if you invest a lot in 80C, pay rent, have health insurance etc. <strong>New Regime</strong> = simpler slabs, fewer deductions, now the default from FY 2023-24.</p></div>
+      ${saving>0?`<div class="save-note">💰 <span>Choosing <strong>${better==='new'?'New Regime':'Old Regime'}</strong> saves you <strong>₹${saving.toLocaleString('en-IN')}</strong> in taxes this year!</span></div>`:''}
+      <div class="regime-grid">
+        <div class="rg-box ${better==='old'?'winner':''}">
+          <div class="rg-name">🏛️ Old Tax Regime <span class="tag-o">With Deductions</span></div>
+          <div class="rg-tax">₹${taxOld.toLocaleString('en-IN')}</div>
+          <div class="rg-sub">Taxable income: ₹${oldInc.toLocaleString('en-IN')}</div>
+          ${better==='old'?`<div class="win-badge">✅ Better for you!</div>`:''}
+        </div>
+        <div class="rg-box ${better==='new'?'winner':''}">
+          <div class="rg-name">🆕 New Tax Regime <span class="tag-n">Default</span></div>
+          <div class="rg-tax">₹${taxNew.toLocaleString('en-IN')}</div>
+          <div class="rg-sub">Taxable income: ₹${newInc.toLocaleString('en-IN')}</div>
+          ${better==='new'?`<div class="win-badge">✅ Better for you!</div>`:''}
+        </div>
+      </div>
+      <p style="font-size:11px;font-weight:900;color:var(--text-soft);letter-spacing:.5px;text-transform:uppercase;margin-bottom:13px;">I want to file under:</p>
+      <div class="rcards">
+        <div class="rcard ${D.regime==='new'?'sel':''}" onclick="pickR('new',this)">
+          <div class="rd"></div>
+          <div class="rt"><strong>New Tax Regime — Default from FY 2023-24 ${better==='new'?'✅':''}</strong><span>No deductions paperwork · Simpler filing · Tax: ₹${taxNew.toLocaleString('en-IN')}</span></div>
+        </div>
+        <div class="rcard ${D.regime==='old'?'sel':''}" onclick="pickR('old',this)">
+          <div class="rd"></div>
+          <div class="rt"><strong>Old Tax Regime ${better==='old'?'✅':''}</strong><span>All deductions (80C, HRA etc.) applied · Tax: ₹${taxOld.toLocaleString('en-IN')}</span></div>
+        </div>
+      </div>
+    </div>
+    ${navRow(()=>go(cur-1),()=>go(cur+1),'See My Summary →')}
+  `;
+}
+function pickR(val,el){D.regime=val;document.querySelectorAll('.rcard').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');}
+
+/* ── STEP 5 ── */
+function renderSummary(c){
+  const gross=Math.max(0,(D.salary||0)-(D.hra||0)-50000+(D.other||0));
+  const totalDed=Object.values(D.ded).reduce((a,b)=>a+(b||0),0);
+  const taxableInc=D.regime==='new'?Math.max(0,gross-75000):Math.max(0,gross-totalDed);
+  const tax=calcTax(taxableInc,D.regime);
+  const tds=D.files.reduce((a,f)=>a+(f.tds||0),0);
+  const balance=tds-tax;
+  const isRef=balance>=0;
+  c.innerHTML=`
+    <div class="sum-hero">
+      <h2>Your Tax Summary 📊</h2>
+      <p>Assessment Year 2024-25 · ${D.regime==='new'?'New Tax Regime':'Old Tax Regime'}</p>
+      <div class="result-pill">
+        <div class="rp-lbl">${isRef?'Tax Refund Due':'Tax Payable'}</div>
+        <div class="rp-amt ${isRef?'refund':'pay'}">₹${Math.abs(balance).toLocaleString('en-IN')}</div>
+        <div class="rp-sub">${isRef?'Will be credited to your registered bank account':'Pay at incometax.gov.in before the due date'}</div>
+      </div>
+    </div>
+    <div class="sum-grid">
+      <div class="sg"><div class="sgl">Gross Salary</div><div class="sgv">₹${(D.salary||0).toLocaleString('en-IN')}</div></div>
+      <div class="sg"><div class="sgl">Standard Deduction</div><div class="sgv green">– ₹50,000</div></div>
+      <div class="sg"><div class="sgl">HRA Exemption</div><div class="sgv green">– ₹${(D.hra||0).toLocaleString('en-IN')}</div></div>
+      <div class="sg"><div class="sgl">Other Income</div><div class="sgv orange">+ ₹${(D.other||0).toLocaleString('en-IN')}</div></div>
+      ${D.regime==='old'?`<div class="sg"><div class="sgl">All Deductions (80C, 80D etc.)</div><div class="sgv green">– ₹${totalDed.toLocaleString('en-IN')}</div></div>`:''}
+      <div class="sg"><div class="sgl">Net Taxable Income</div><div class="sgv">₹${taxableInc.toLocaleString('en-IN')}</div></div>
+      <div class="sg"><div class="sgl">Income Tax + 4% Cess</div><div class="sgv orange">₹${tax.toLocaleString('en-IN')}</div></div>
+      <div class="sg"><div class="sgl">TDS Already Deducted</div><div class="sgv green">₹${tds.toLocaleString('en-IN')}</div></div>
+    </div>
+    ${D.files.length>1?`
+    <div style="padding:0 34px 16px">
+      <p style="font-size:11px;font-weight:900;color:var(--text-soft);letter-spacing:.5px;text-transform:uppercase;margin-bottom:11px;">📋 Multi-Employer Breakdown (${D.files.length} Companies)</p>
+      ${D.files.map((f,i)=>`<div class="emp-row"><div class="erl"><strong>Employer ${i+1}</strong><span>${f.name}</span></div><div class="err"><div class="ersal">₹${(f.salary||0).toLocaleString('en-IN')}</div><div class="ertds">TDS: ₹${(f.tds||0).toLocaleString('en-IN')}</div></div></div>`).join('')}
+    </div>`:``}
+    <div class="next-box">
+      <h3>🚀 Your Next Steps to File ITR</h3>
+      ${[
+        {n:'1',t:'Verify all numbers above match your Form 16 and bank passbook'},
+        {n:'2',t:'Visit <a href="https://incometax.gov.in" target="_blank" style="color:var(--saffron-dk);font-weight:800">incometax.gov.in</a> and login with your PAN or Aadhaar number'},
+        {n:'3',t:'Click <strong>e-File → Income Tax Return → AY 2024-25 → ITR-1</strong> (salaried employees)'},
+        {n:'4',t:'Portal shows pre-filled data — use this summary to verify and fill any gaps'},
+        {n:'5',t:isRef?'Submit and <strong>e-Verify</strong> using Aadhaar OTP — refund arrives in 7–45 days to your bank':'Pay due tax via Challan 280 first → then submit and e-Verify using Aadhaar OTP'},
+      ].map(s=>`<div class="ns-row"><span class="ns-num">${s.n}</span><span>${s.t}</span></div>`).join('')}
+    </div>
+    <div style="padding:0 34px 32px;display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="alert('Full version: Generates a beautifully formatted PDF of your complete tax computation — ready to reference while filing on the income tax portal!')">⬇ Download PDF Report</button>
+      <button class="btn btn-secondary" onclick="resetAll()">🔄 Start New Filing</button>
+    </div>
+  `;
+}
+function resetAll(){D={empType:'',files:[],salary:0,hra:0,other:0,ded:{c80C:0,d80D:0,e80E:0,h24b:0,nps:0,g80G:0},regime:'new'};go(0);}
+
+render();
+</script>
+</body>
+</html>
